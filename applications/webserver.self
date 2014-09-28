@@ -1,6 +1,6 @@
  '$Revision:$'
  '
-Copyright 1992-2014 AUTHORS.
+Copyright 1992-2011 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
 '
 
@@ -455,7 +455,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
             (i matchesPattern: 'HEAD *') ifTrue: [
               req url: i copyFrom: 6 UpTo: i size - 9.   
               req method: 'HEAD'.
-            ].
+            ]. 
             i size = 0] whileFalse: [].
             req).
         } | ) 
