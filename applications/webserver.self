@@ -1,6 +1,6 @@
  '$Revision:$'
  '
-Copyright 1992-2011 AUTHORS.
+Copyright 1992-2014 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
 '
 
@@ -163,13 +163,21 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
          handle: u = ( |
              f.
              fn.
+             path.
+             r.
             | 
-            (u url = '') ifTrue: [fn: 'index.html'] IfFalse: [fn: u url]. 
+            (u url = '') ifTrue: [fn: 'index.html'] False: [fn: u url]. 
             (fn last = '/') ifTrue: [fn: fn, 'index.html'].
-            fn: baseDirectory, fn.
-            f: os_file deadCopy openForReading: fn IfFail: [^ 'Not Found:', fn].
+            path: baseDirectory, fn.
+            f: os_file deadCopy openForReading: path IfFail: [ 
+              r: webserver response copy.
+              r contents: 'Not Found:', fn.
+              r statusCode: '404 Not Found'.
+              ^r
+            ].
             r: webserver response copy.
             r contents: f contents.
+            r guessContentTypeFromName: fn.
             r).
         } | ) 
 
