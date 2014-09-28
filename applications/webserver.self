@@ -1,6 +1,6 @@
  '$Revision:$'
  '
-Copyright 1992-2011 AUTHORS.
+Copyright 1992-2014 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
 '
 
@@ -122,6 +122,12 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         
          handle: req = ( |
             | webserver response copy).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -606,9 +612,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (nil)'
+         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         servlet <- bootstrap stub -> 'globals' -> 'nil' -> ().
+         servlet <- bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
