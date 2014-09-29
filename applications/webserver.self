@@ -124,6 +124,12 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
             | webserver response copy).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -614,9 +620,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (nil)'
+         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         servlet <- bootstrap stub -> 'globals' -> 'nil' -> ().
+         servlet <- bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
