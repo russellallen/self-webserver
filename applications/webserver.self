@@ -166,6 +166,41 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'fileServlet' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
+         canonicalizeUrl: aPath = ( |
+             path.
+            | 
+            aPath size = 0 ifTrue: [ ^aPath ].
+            path: aPath asTokensSeparatedByCharactersIn: '/'.
+
+            "Remove occurences of ./ from path"
+            path: path filterBy: [ |:s| s != '.' ].
+            path isEmpty ifTrue: [ ^'' ].
+
+            "Remove leading ../ from path"
+            [ path isEmpty not && [ path first = '..' ] ] whileTrue: [
+              path removeFirst
+            ].
+
+            "Process other ../ in path"
+            path rep doLinks: [ |:lnk|
+              lnk value = '..' ifTrue: [
+                lnk prev remove.
+                path size: path size pred.
+                lnk remove.
+                path size: path size pred.
+              ].
+            ].
+
+            "Get string from path list"
+            path isEmpty ifTrue: [ ^'' ].
+            path: path reduceWith: [|:a. :b| a,'/',b ] IfSingleton: [ |:a| a ].
+            (aPath at: 0) = '/' ifTrue: [ path: '/',path ].
+            path).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'fileServlet' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
          handle: u = ( |
              f.
              fn.
@@ -175,6 +210,14 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
             (u url = '') ifTrue: [fn: 'index.html'] False: [fn: u url]. 
             (fn last = '/') ifTrue: [fn: fn, 'index.html'].
             path: baseDirectory, fn.
+            path: os_file expand: path.
+            path: canonicalizeUrl: path.
+            ((os_file expand: baseDirectory) isPrefixOf: path) ifFalse: [
+              r: webserver response copy.
+              r contents: 'Not Found:', fn.
+              r statusCode: '404 Not Found'.
+              ^r
+            ].
             f: os_file deadCopy openForReading: path IfFail: [ 
               r: webserver response copy.
               r contents: 'Not Found:', fn.
