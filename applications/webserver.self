@@ -825,42 +825,6 @@ strings module for 4.5 systems.\x7fModuleInfo: Module: webserver InitialContents
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'mixins' -> 'identity' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
-        
-         = x = ( |
-            | == x).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'mixins' -> 'identity' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
-        
-         hash = ( |
-            | identityHash).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'mixins' -> 'oddball' -> () From: ( | {
-         'Comment: return the receiver, not a copy\x7fModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copy = ( |
-            | self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'mixins' -> 'unordered' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: private'
-        
-         descendantResponsibilities = bootstrap setObjectAnnotationOf: bootstrap stub -> 'mixins' -> 'unordered' -> 'descendantResponsibilities' -> () From: ( |
-             {} = 'Comment: The following methods must be implemented by a descendant.\x7fModuleInfo: Creator: mixins unordered descendantResponsibilities.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'oddball' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'lobby' -> ().
-        } | ) 
-
 
 
  '-- Side effects'
