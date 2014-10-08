@@ -432,14 +432,13 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
             broken: [
               io write: 'HTTP/1.0 501\n\n' IfFail: false.
               io closeIfFail: false. ^ self]. 
-            req: readHeader: io IfFail: broken.
-            r: safeHandle: req.
-            io write: 'HTTP/1.0 ', r statusCode, '\n' IfFail: broken.
-            io write: 'Content-Type: ', r contentType, '\n' IfFail: broken.
-            io write: 'Content-Length: ', r contentsLength, '\n' IfFail: broken.
-            io write: 'Connection: close', '\n' IfFail: broken.
-            io write: '\n' IfFail: broken.
-            req method = 'GET' ifTrue: [io write: r contents IfFail: broken].
+
+            req: request copy readHeader: io IfFail: broken.
+            r: safeHandle: req               IfFail: broken.
+            r writeHeaderOn: io              IfFail: broken.
+            "Ignore body if only want head"
+            req method != 'HEAD' ifTrue: [
+                 r writeBodyOn: io IfFail: broken].
             io closeIfFail: false.
             self).
         } | ) 
@@ -481,7 +480,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         
          log: s = ( |
             | 
-            debug ifTrue: [s value shrinkwrapped printLine]. self).
+            debug ifTrue: [s value printString shrinkwrapped printLine]. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -491,30 +490,23 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (8080)'
+         'Category: patching\x7fComment: This is an alternative to loading an altered
+strings module for 4.5 systems.\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         port <- 8080.
+         patchForWhiteSpace = ( |
+            | 
+            " Tests if Self's defintion of whitespace has been fixed "
+            (traits string whiteSpace includes: '\r') ifFalse: [
+              traits string _AddSlots: (|
+                whiteSpace = ' \r\n\t' |) ].
+            log: 'Patched traits string whiteSpace'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (8080)'
         
-         readHeader: io IfFail: blk = ( |
-             req.
-            | 
-            req: request copy.
-            [|i|
-            i: (io readLineIfFail: [^ blk value]) shrinkwrapped. 
-            log: i.
-            (i matchesPattern: 'GET *') ifTrue: [
-              req url: i copyFrom: 5 UpTo: i size - 9. 
-              req method: 'GET'].
-            (i matchesPattern: 'HEAD *') ifTrue: [
-              req url: i copyFrom: 6 UpTo: i size - 9.   
-              req method: 'HEAD'.
-            ]. 
-            i size = 0] whileFalse: [].
-            req).
+         port <- 8080.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -549,21 +541,92 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: InitializeToExpression: (nil)'
+         'ModuleInfo: Module: webserver InitialContents: InitializeToExpression: (dictionary copyRemoveAll)'
         
-         method.
+         headerFields <- dictionary copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: InitializeToExpression: (\'\')'
+        
+         method <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
+         p* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals webserver request p.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         headerFieldAt: k IfAbsent: blk = ( |
+            | headerFields at: k IfAbsent: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         headerFieldsAt: k Put: v = ( |
+            | headerFields at: k Put: v. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
          p* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: InitializeToExpression: (nil)'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         url.
+         readHeader: io IfFail: blk = ( |
+             line.
+             log.
+             methodLine.
+             readLog.
+             req.
+            | 
+            log: [|:m| webserver log: m ].
+            readLog: [|l| l: (io readLineIfFail: [^ blk value]) shrinkwrapped. log value: l. l].
+            readMethodLine: readLog value IfFail: [^ blk value].
+            [line: readLog value. line size > 0] whileTrue: [
+              readHeaderLine: line IfFail: [^ blk value]].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         readHeaderLine: line IfFail: blk = ( |
+            | 
+            line findSubstring: ':'
+                     IfPresent: [|:i| headerFieldsAt: (line copyFrom: 0 UpTo: i)
+                                                 Put: (line copyFrom: i + 1 UpTo: line size) ]
+                      IfAbsent: [^ blk value]. "Malformed header"
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         readMethodLine: line IfFail: blk = ( |
+             methodLine.
+            | 
+            methodLine: line asTokensSeparatedByWhiteSpace. 
+            method: (methodLine at: 0 IfAbsent: [^ blk value]).
+            url:    (methodLine at: 1 IfAbsent: [^ blk value]).
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: InitializeToExpression: (\'\')'
+        
+         url <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -590,12 +653,21 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
+         p* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> 'p' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals webserver response p.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
          contentsLength = ( |
             | 
             contents size asString).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> 'p' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          guessContentTypeFromName: n = ( |
@@ -615,10 +687,33 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> 'p' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          p* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         writeBodyOn: io IfFail: blk = ( |
+            | 
+            io write: contents IfFail: [^ blk value]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> 'p' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         writeHeaderOn: io IfFail: blk = ( |
+             broken.
+            | 
+            broken: [^ blk value].
+            io write: 'HTTP/1.0 ', statusCode, '\n'            IfFail: broken.
+            io write: 'Content-Type: ', contentType, '\n'      IfFail: broken.
+            io write: 'Content-Length: ', contentsLength, '\n' IfFail: broken.
+            io write: 'Connection: close', '\n'                  IfFail: broken.
+            io write: '\n' IfFail: broken.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> () From: ( | {
@@ -643,11 +738,28 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: support\x7fComment: Replace with timeout call of message.\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+         'Category: support\x7fComment: TODO: Replace with timeout call of message.\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         safeHandle: req = ( |
+         safeHandle: req IfFail: blk = ( |
+             k.
+             p.
+             w.
             | 
-            servlet handle: req).
+            k: (| p* = traits oddball.
+                kill: ps After: ms = (
+                 process this sleep: ms.
+                 ps abortIfLive.
+                 self )
+               |).
+            p: (message copy receiver: servlet 
+                             Selector: 'handle:' 
+                                 With: req) fork resume.
+            w: (message copy receiver: k 
+                             Selector: 'kill:After:' 
+                                 With: p
+                                 With: servletTimeout) fork resume.
+            p waitForDeath returnValue
+               ifNil: [^ blk value]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -665,7 +777,13 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
          'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         servlet <- bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> ().
+         servlet <- bootstrap stub -> 'globals' -> 'miocontrol' -> 'servlet' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (30000)'
+        
+         servletTimeout <- 30000.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -705,6 +823,42 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
             serverProcess abort.
             serverProcess: deadProcess.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'mixins' -> 'identity' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         = x = ( |
+            | == x).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'mixins' -> 'identity' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hash = ( |
+            | identityHash).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'mixins' -> 'oddball' -> () From: ( | {
+         'Comment: return the receiver, not a copy\x7fModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copy = ( |
+            | self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'mixins' -> 'unordered' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: private'
+        
+         descendantResponsibilities = bootstrap setObjectAnnotationOf: bootstrap stub -> 'mixins' -> 'unordered' -> 'descendantResponsibilities' -> () From: ( |
+             {} = 'Comment: The following methods must be implemented by a descendant.\x7fModuleInfo: Creator: mixins unordered descendantResponsibilities.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'oddball' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'lobby' -> ().
         } | ) 
 
 
