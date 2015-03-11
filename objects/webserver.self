@@ -1,8 +1,11 @@
- '$Revision:$'
+ '0.2.0'
  '
 Copyright 1992-2014 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
 '
+[ 
+modules allCore version >= (modules init moduleVersion copyOn: '30.8.0-prerelease2') 
+    ifFalse: [^ error: 'Need more modern Self']] value
 
 
  '-- Module body'
@@ -15,14 +18,16 @@ See the legal/LICENSE file for license information and legal/AUTHORS for authors
              bootstrap remove: 'fileInTimeString' From:
              bootstrap remove: 'myComment' From:
              bootstrap remove: 'postFileIn' From:
+             bootstrap remove: 'preFileIn' From:
              bootstrap remove: 'revision' From:
              bootstrap remove: 'subpartNames' From:
+             bootstrap remove: 'tree' From:
              globals modules init copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals modules webserver.
 
 CopyDowns:
 globals modules init. copy 
-SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNames.
+SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision subpartNames tree.
 
 \x7fIsComplete: '.
             | ) .
@@ -31,7 +36,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
         
-         directory <- 'applications'.
+         directory <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
@@ -54,15 +59,31 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         preFileIn = ( |
+            | 
+            modules allCore version >= (modules init moduleVersion copyOn: '30.8.0-prerelease2') 
+                ifFalse: [^ error: 'Need more modern Self']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
         
-         revision <- '$Revision:$'.
+         revision <- '0.2.0'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: private'
         
-         subpartNames <- ''.
+         subpartNames <- 'lobbyBrowserServlet
+'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: InitializeToExpression: (\'org_selflanguage_webserver\')'
+        
+         tree <- 'org_selflanguage_webserver'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> () From: ( | {
@@ -384,255 +405,6 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         lobbyBrowserServlet = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals webserver exampleServlets lobbyBrowserServlet.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals webserver exampleServlets lobbyBrowserServlet parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         appropriateSigilFor: slot = ( |
-            | 
-            ( slot mirror at: (slot name, ':') IfAbsent: [^ ' = '] ) 
-              value = mirrors assignment ifTrue: [^ ' &larr; '].
-            ' = ').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         banner = ( |
-            | 
-            '<h1><small>- live browsing of Self object memory -</small></h1>').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         breadcrumbsFor: m = ( |
-            | 
-            m creatorPathIfPresent: [|:p. i <- 0. t. s <- '<a href="/">lobby</a> ' |
-                [i < p size] whileTrue: [
-                  t: p clone contents: p contents slice: 0 @ i.
-                  s: s, '<a href="/', (transform: t fullName), '/">', t shortName, '</a> &rarr; '.
-                  i: i + 1
-                ].
-                s]
-            IfAbsent: ['']).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         buildHtmlForSlotsIn: categories StartingWith: prefix = ( |
-            | 
-            '<div class="row">
-              <div class="col-md-12">
-                <h3>
-                  <small>
-                    <span class="glyphicon glyphicon-chevron-down"></span>
-                  </small>', 
-                  (prefix size > 0 ifTrue: [prefix last] False: ''), 
-            '   </h3>
-              </div>
-              <div class="col-md-12">
-                <p>
-                  <table class="table table-condensed table-hover">',
-                  [| slots. html <- '' |
-                    slots: categories at: prefix IfAbsent: [sequence copyRemoveAll].
-                    slots: (slots copy filterBy: [|:s| s isParent]) copySort, 
-                           (slots copy filterBy: [|:s| s isParent not]) copySort.
-                    slots do: [|:s| 
-                      s isAssignment ifFalse: [html: html, htmlForSlot: s]].
-                    html
-                  ] value,
-            '     </table>
-                </p>',
-                  [| cat. html <- '' |
-                    cat: (categories keys copy
-                       filterBy: [|:e| (e size = (prefix size + 1)) && [prefix = (e slice: 0 @ prefix size)]]).
-                    cat copySort do: [|:n| 
-                       html: html, '<div class="col-md-12">', 
-                              (buildHtmlForSlotsIn: categories StartingWith: n), 
-                               '</div>'].
-                    html
-                  ] value,
-            '  </div>
-            </div>').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         buildSlots: o = ( |
-             categories.
-            | 
-            categories: dictionary copyRemoveAll.
-            o do: [|:s. c| 
-               c: ('\x7f' split: s categoryIfFail: '') asSequence.
-               (c size > 0) && [c last = '\x7f'] ifTrue: [c: c copyWithoutLast].
-               categories
-                   findFirst: [|:v. :k| c = k] 
-                   IfPresent: [(categories at: c) add: s]
-                    IfAbsent: [categories at: c Put: (list copyRemoveAll add: s)]].
-            buildHtmlForSlotsIn: categories StartingWith: sequence copy).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         cleanSource: s = ( |
-            | 
-            '\n' join: ('\n' split: s) asSequence
-              mapBy: [|:l| (l size > 12) && 
-                      [(l slice: 0 @ 12) isAllWhiteSpace]
-                           ifTrue: [l slice: 12 @ infinity] False: l]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         contentsForObject: m = ( |
-            | 
-            m isReflecteeMethod ifTrue: [|s. sp|
-              s: cleanSource: m blockSourceIfFail: '(Could not get method source)'.
-              s: s shrinkwrapped.
-              ('\n' split: s) size > 1
-                  ifTrue: ['<pre>(\n', s, '\n)</pre>']
-                   False: ['<code>( ', s, ' )</code>'].
-            ] False: [m safeName]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         footer = '</div></body></html>'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         getMirrorAtPath: p = ( |
-             o.
-            | 
-            o: reflect: lobby.
-            p do: [|:n| o:(o at: n IfAbsent: [^ o]) contents].
-            o).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         handle: u = ( |
-             o.
-             r.
-             t.
-            | 
-            u req url = '/' 
-              ifTrue: [o: reflect: lobby]
-              False: [
-                o: getMirrorAtPath: 
-                  u req url asTokensSeparatedByCharactersSatisfying: [|:c | c = '/']].
-            u res write: htmlFor: o.
-            u).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         header = '
-<!DOCTYPE HTML>
-<html lang=\"en\">
-<head>
-<meta charset=\"utf-8\">
-<title>manager.larrikin.org</title>
-<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
-<!-- Bootstrap styles -->
-<link rel=\"stylesheet\" href=\"//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css\">
-<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js\"></script>
-<!-- Generic page styles -->
-<link rel=\"stylesheet\" href=\"/css/style.css\">
-</head>
-<body>
-<div class=\"container\">
-'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         htmlFor: o = ( |
-             r.
-            | 
-
-            r: header.
-            r: r, banner.
-            r: r, '<h1><small>'.
-            r: r, breadcrumbsFor: o.
-            r: r, '</small>', (o evalName), '</h1>'.
-            r: r, '<div class="row"><div class="col-md-12">'.
-            r: r, '<p><i>', (o comment), '</i></p>'.
-            r: r, '<p>CopyDowns: ', (o copyDowns printString), '</p>'.
-            r: r, '<p>CreatorPath: ', (' ' join: o creatorPath), '</p>'.
-            r: r, '<p>', (o moduleSummaryStringForSlotsFilteredBy: true), '</p>'.
-            r: r, '</div></div>'.
-            r: r, buildSlots: o.
-            r: r, footer.
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         htmlForSlot: s = ( |
-            | 
-            '<tr><td width=60%>',
-            (linkForObject: s),
-            (appropriateSigilFor: s),
-            (contentsForObject: s value),
-            '</td><td width=40%>',
-            (s comment = '' ifTrue: '' False: ['<em>', s comment, '</em>']),
-            '</td></tr>').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         linkForObject: s = ( |
-            | 
-            s value creatorPathIfPresent: [|:p|
-              '<a href="/', (transform: p fullName), '/">', s fullName, '</a>']
-            IfAbsent: [s fullName]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         transform: s = ( |
-            | 
-            s replace: ' ' With: '/').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
          staticSiteServer = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'staticSiteServer' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals webserver exampleServlets staticSiteServer.
 '.
@@ -782,7 +554,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
                                 'probably by another Self server.\n\n'.
                               ^self]
                       False: [^error: 'Couldn\'t start self server: ', e]].
-            log: 'serverSocket initialised'.
+            log info: 'serverSocket initialised' For: 'webserver'.
             self).
         } | ) 
 
@@ -795,59 +567,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: logging\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         log: s = ( |
-            | 
-            debug ifTrue: [('[', time current compactPrintString, '] ', s value asString shrinkwrapped) printLine]. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: patching\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         patchAll = ( |
-            | patchForReadline patchForWhiteSpace. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: patching\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         patchForReadline = ( |
-            | 
-            " Tests if Self's defintion of readLineIfFail has been fixed "
-            ((reflect: traits abstractFile) includesKey: 'readLineIfFail:') ifFalse: [
-              traits abstractFile _AddSlots: (|
-
-                readLineIfFail: fb = ( | buf. line <- '' |
-                "Read up to and including first \n - skip this \n."
-                [ buf: readCount: 1 IfFail: fb. (buf != '\n') && [atEOF not] ] whileTrue: [ 
-                    line: line, buf.
-                ].
-                line).
-
-            |) ].
-            log: 'Patched traits abstractFile readLineIfFail:'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: patching\x7fComment: This is an alternative to loading an altered
-strings module for 4.5 systems.\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         patchForWhiteSpace = ( |
-            | 
-            " Tests if Self's defintion of whitespace has been fixed "
-            (traits string whiteSpace includes: '\r') ifFalse: [
-              traits string _AddSlots: (|
-                whiteSpace = ' \r\n\t' |) ].
-            log: 'Patched traits string whiteSpace'.
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -1049,13 +771,12 @@ strings module for 4.5 systems.\x7fModuleInfo: Module: webserver InitialContents
         
          readHeader: io IfFail: blk = ( |
              line.
-             log.
              methodLine.
              readLog.
              req.
             | 
-            log: [|:m| webserver log: m ].
-            readLog: [|l| l: (io readLineIfFail: [^ blk value]) shrinkwrapped. log value: l. l].
+            readLog: [|l| l: (io readLineIfFail: [^ blk value]) shrinkwrapped. 
+               log info: l For: 'webserver'. l].
             readMethodLine: readLog value IfFail: [^ blk value].
             [line: readLog value. line size > 0] whileTrue: [
               readHeaderLine: line IfFail: [^ blk value]].
@@ -1324,19 +1045,26 @@ strings module for 4.5 systems.\x7fModuleInfo: Module: webserver InitialContents
          start = ( |
              p.
             | 
+            log dispatcher add: webserverLogHandler.
             serverProcess isAlive ifTrue: [stop].
-            log: 'Starting webserver on port ', port asString.
+            log info: 'Starting webserver on port ', port asString For: 'webserver'.
             p: (message copy receiver: self Selector: 'startServerOn:' With: port) fork.
             serverProcess: p.
-            log: p totalTime.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+         'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (false)\x7fVisibility: public'
+        
+         startAutomatically <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
          'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          startFromScheduler = ( |
-            | startWebserverAutomatically ifTrue: [isRunning ifFalse: [start]]. self).
+            | 
+            startAutomatically ifTrue: [isRunning ifFalse: [start]]. self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -1352,17 +1080,11 @@ strings module for 4.5 systems.\x7fModuleInfo: Module: webserver InitialContents
         
          startServerOn: port = ( |
             | 
-            log: 'About to initialise server...'.
+            log info: 'About to initialise server...' For: 'webserver'.
             initialiseSocketOn: port.
-            log: 'About to start listen loop...'.
+            log info: 'About to start listen loop...' For: 'webserver'.
             runServerLoop.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (false)\x7fVisibility: public'
-        
-         startWebserverAutomatically <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
@@ -1370,12 +1092,44 @@ strings module for 4.5 systems.\x7fModuleInfo: Module: webserver InitialContents
         
          stop = ( |
             | 
-            log: 'Stopping webserver'.
+            log info: 'Stopping webserver' For: 'webserver'.
             serverSocket closeIfFail: [
-              log: 'Could not close serverSocket'].
+              log warning: 'Could not close serverSocket' For: 'webserver'].
             serverProcess abort.
             serverProcess: deadProcess.
+            log dispatcher remove: webserverLogHandler.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+         'Category: logging\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         webserverLogHandler = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'webserverLogHandler' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals webserver webserverLogHandler.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'webserverLogHandler' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         handle: entry = ( |
+            | 
+            entry logger = 'webserver' ifTrue: [
+              entry printLine].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'webserverLogHandler' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         name = 'webserver'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'webserverLogHandler' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         p* = bootstrap stub -> 'globals' -> 'log' -> 'prototypeHandlers' -> 'baseHandler' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'time' -> () From: ( | {
@@ -1426,6 +1180,12 @@ strings module for 4.5 systems.\x7fModuleInfo: Module: webserver InitialContents
             (minute printStringPadWith0ToSize: 2), ':',
             (second printStringPadWith0ToSize: 2), ' GMT').
         } | ) 
+
+
+
+ '-- Sub parts'
+
+ bootstrap read: 'lobbyBrowserServlet' InTree: globals modules webserver tree
 
 
 
