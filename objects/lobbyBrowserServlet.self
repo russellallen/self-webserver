@@ -1,10 +1,11 @@
- '0.2.0'
+ '0.1.0'
  '
-Copyright 2014-2015 AUTHORS.
+Copyright 1992-2014 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
 '
-
-modules webserver version >= (modules init moduleVersion copyOn: '0.2.0') ifFalse: [^ error: 'Need at least version 0.2.0 of modules webserver']
+[ 
+modules webserver version >= (modules init moduleVersion copyOn: '0.2.0')
+  ifFalse: [error: 'Need at least version 0.2.0 of modules webserver']] value
 
 
  '-- Module body'
@@ -353,7 +354,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: lobbyBrowserServlet InitialContents: FollowSlot'
+         'Category: contents for object\x7fModuleInfo: Module: lobbyBrowserServlet InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 

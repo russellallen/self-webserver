@@ -96,7 +96,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: request and response\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+         'Category: prototypes\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          cookie = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'cookie' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals webserver cookie.
@@ -242,41 +242,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         deadProcess = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'deadProcess' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals webserver deadProcess.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'deadProcess' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         abort = ( |
-            | self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'deadProcess' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         isAlive = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'deadProcess' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         isNil = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (true)'
-        
-         debug <- bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+         'Category: servlets\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          defaultServlet = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals webserver defaultServlet.
@@ -287,8 +253,10 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         handle: req = ( |
-            | webserver response copy).
+         handle: con = ( |
+            | 
+            con res contents: 'Not configures, using default Servlet.'.
+            con).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> () From: ( | {
@@ -298,16 +266,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
-        
-         deregisterServlet = ( |
-            | 
-            servlet: defaultServlet.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: servlets\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          exampleServlets = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals webserver exampleServlets.
@@ -484,33 +443,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
-         handleRequest: io = ( |
-             broken.
-             conn.
-             r.
-             req.
-            | 
-            broken: [
-              io write: 'HTTP/1.0 501\n\n' IfFail: false.
-              io closeIfFail: false. ^ self]. 
-            req: request copy readHeader: io IfFail: broken.
-            req readBody: io                 IfFail: broken.
-            conn: httpconnection copy.
-            conn req: req.
-            conn res: response copy.
-            r: safeHandle: conn              IfFail: broken.
-            r res writeHeaderOn: io          IfFail: broken.
-            "Ignore body if only want head"
-            req method != 'HEAD' ifTrue: [
-                 r res writeBodyOn: io IfFail: broken].
-            io closeIfFail: false.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: request and response\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+         'Category: prototypes\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          httpconnection = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'httpconnection' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals webserver httpconnection.
@@ -537,77 +470,31 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+         'Category: servlets\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         initialiseSocketOn: port = ( |
-            | 
-            serverSocket closeIfFail: [].
-            serverSocket:
-              os_file
-                openTCPListenerOnPort: port
-                IfFail: [|:e|
-                     (e matchesPattern: '*UNKNOWN 125*')
-                  || [e matchesPattern: '*EADDRINUSE*']
-                     ifTrue: [error: e, '\n',
-                                'Warning: couldn\'t start the rself server process.\n',
-                                'The port (', port printString, ') is already in use, ',
-                                'probably by another Self server.\n\n'.
-                              ^self]
-                      False: [^error: 'Couldn\'t start self server: ', e]].
-            log info: 'serverSocket initialised' For: 'webserver'.
-            self).
+         prototypeServlet = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'prototypeServlet' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals webserver prototypeServlet.
+'.
+            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: servlets\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         isRunning = ( |
-            | 
-            serverProcess isAlive).
+         servletTraits = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'servletTraits' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals webserver servletTraits.
+'.
+            | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'prototypeServlet' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+         parent* = bootstrap stub -> 'globals' -> 'webserver' -> 'servletTraits' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (8080)'
-        
-         port <- 8080.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
-        
-         registerForAutomaticStartup = ( |
-             m.
-            | 
-            snapshotAction
-              forCommandLineArg: '-http-port'
-                       DoAction: (| parent* = lobby.
-                                    value: i With: arg = (
-                                     webserver startWebserverAutomatically: true.
-                                     webserver port: 
-                                        (snapshotAction commandLine at: i succ) asInteger. 
-                                     i +2).
-                                 |).
-            m: (message copy receiver: webserver Selector: 'startFromScheduler').
-            (snapshotAction schedulerInitialMessages anySatisfy: [|:e| m = e ])
-              ifFalse: [snapshotAction addSchedulerInitialMessage: m].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
-        
-         registerServlet: s = ( |
-            | servlet: s. self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: request and response\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+         'Category: prototypes\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          request = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals webserver request.
@@ -853,7 +740,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: request and response\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+         'Category: prototypes\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          response = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'response' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals webserver response.
@@ -974,6 +861,154 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         server <- bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals webserver server.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         deadProcess = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'deadProcess' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals webserver server deadProcess.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'deadProcess' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         abort = ( |
+            | self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'deadProcess' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         isAlive = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'deadProcess' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         isNil = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (true)'
+        
+         debug <- bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         deregisterServlet = ( |
+            | 
+            servlet: webserver defaultServlet.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         handleRequest: io = ( |
+             broken.
+             conn.
+             r.
+             req.
+            | 
+            broken: [
+              io write: 'HTTP/1.0 501\n\n' IfFail: false.
+              io closeIfFail: false. ^ self]. 
+            req: webserver request copy readHeader: io IfFail: broken.
+            req readBody: io                 IfFail: broken.
+            conn: webserver httpconnection copy.
+            conn req: req.
+            conn res: webserver response copy.
+            r: safeHandle: conn              IfFail: broken.
+            r res writeHeaderOn: io          IfFail: broken.
+            "Ignore body if only want head"
+            req method != 'HEAD' ifTrue: [
+                 r res writeBodyOn: io IfFail: broken].
+            io closeIfFail: false.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         initialiseSocketOn: port = ( |
+            | 
+            serverSocket closeIfFail: [].
+            serverSocket:
+              os_file
+                openTCPListenerOnPort: port
+                IfFail: [|:e|
+                     (e matchesPattern: '*UNKNOWN 125*')
+                  || [e matchesPattern: '*EADDRINUSE*']
+                     ifTrue: [error: e, '\n',
+                                'Warning: couldn\'t start the rself server process.\n',
+                                'The port (', port printString, ') is already in use, ',
+                                'probably by another Self server.\n\n'.
+                              ^self]
+                      False: [^error: 'Couldn\'t start self server: ', e]].
+            log info: 'serverSocket initialised' For: 'webserver'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isRunning = ( |
+            | 
+            serverProcess isAlive).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (8080)'
+        
+         port <- 8080.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         registerForAutomaticStartup = ( |
+             m.
+            | 
+            snapshotAction
+              forCommandLineArg: '-http-port'
+                       DoAction: (| parent* = lobby.
+                                    value: i With: arg = (
+                                     webserver server startWebserverAutomatically: true.
+                                     webserver server port: 
+                                        (snapshotAction commandLine at: i succ) asInteger. 
+                                     i +2).
+                                 |).
+            m: (message copy receiver: webserver server Selector: 'startFromScheduler').
+            (snapshotAction schedulerInitialMessages anySatisfy: [|:e| m = e ])
+              ifFalse: [snapshotAction addSchedulerInitialMessage: m].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         registerServlet: s = ( |
+            | servlet: s. self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          runServerLoop = ( |
@@ -988,7 +1023,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          safeHandle: con IfFail: blk = ( |
@@ -1015,31 +1050,31 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
                  r ifNil: [^ blk value]]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (webserver deadProcess)'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (webserver server deadProcess)'
         
-         serverProcess <- bootstrap stub -> 'globals' -> 'webserver' -> 'deadProcess' -> ().
+         serverProcess <- bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'deadProcess' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (os_file deadCopy)'
         
          serverSocket <- os_file deadCopy.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (webserver defaultServlet)'
         
          servlet <- bootstrap stub -> 'globals' -> 'webserver' -> 'defaultServlet' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
-         'Category: internal state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (30000)'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: internal state\x7fComment: 10 minutes\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (600000)'
         
-         servletTimeout <- 30000.
+         servletTimeout <- 600000.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
         
          start = ( |
@@ -1053,13 +1088,13 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (false)\x7fVisibility: public'
         
          startAutomatically <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          startFromScheduler = ( |
@@ -1067,7 +1102,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             startAutomatically ifTrue: [isRunning ifFalse: [start]]. self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
         
          startOn: aPort = ( |
@@ -1075,7 +1110,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             port: aPort. start).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'Category: support\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          startServerOn: port = ( |
@@ -1087,7 +1122,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
         
          stop = ( |
@@ -1101,16 +1136,16 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
          'Category: logging\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         webserverLogHandler = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'webserverLogHandler' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals webserver webserverLogHandler.
+         webserverLogHandler = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'webserverLogHandler' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals webserver server webserverLogHandler.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'webserverLogHandler' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'webserverLogHandler' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          handle: entry = ( |
@@ -1120,16 +1155,31 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'webserverLogHandler' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'webserverLogHandler' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          name = 'webserver'.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'webserverLogHandler' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> 'webserverLogHandler' -> () From: ( | {
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          p* = bootstrap stub -> 'globals' -> 'log' -> 'prototypeHandlers' -> 'baseHandler' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'servletTraits' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         handle: con = ( |
+            | 
+            con res contents: 'Override "handle: aHTTPConnection" to see something here.'.
+            con).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'servletTraits' -> () From: ( | {
+         'ModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'time' -> () From: ( | {
