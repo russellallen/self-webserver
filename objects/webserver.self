@@ -598,14 +598,6 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
          'Category: method\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
-         ifGET: gb Else: e = ( |
-            | 
-            ifGET: gb IfPOST: e Else: e).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
-         'Category: method\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
-        
          ifGET: gb IfPOST: pb Else: e = ( |
             | 
             case 
@@ -639,6 +631,33 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          p* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'Category: url\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         path = ( |
+            | 
+            url findSubstring: '?'
+            IfPresent: [|:i | url copyFrom: 0 UpTo: i]
+             IfAbsent: [url]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'Category: url\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         pathList = ( |
+            | path asTokensSeparatedByCharactersIn: '/').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
+         'Category: url\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
+        
+         queryString = ( |
+            | 
+            url findSubstring: '?'
+            IfPresent: [|:i | url copyFrom: i + 1 UpTo: url size]
+             IfAbsent: ['']).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> 'p' -> () From: ( | {
@@ -703,8 +722,8 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
              r.
             | 
             r: x.
-            b: ' !#$&\'()*+,/:;=?@[]'.
-            a: ('+' & '%21' & '%23' & '%24' & '%26' & '%27' & '%28' & '%29' & '%2A' & '%2B' & '%2C' & '%2F' & '%3A' & '%3B' & '%3D' & '%3F' & '%40' & '%5B' & '%5D') asVector.
+            b: '  !#$&\'()*+,/:;=?@[]'.
+            a: ('+' & '%20' & '%21' & '%23' & '%24' & '%26' & '%27' & '%28' & '%29' & '%2A' & '%2B' & '%2C' & '%2F' & '%3A' & '%3B' & '%3D' & '%3F' & '%40' & '%5B' & '%5D') asVector.
             0 to: b size - 1 Do: [|:i|
               r: r replace: (a at: i) With: (b at: i)].
             r).
@@ -715,16 +734,22 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         
          variableAt: x IfFail: blk = ( |
              pairs.
+             u.
             | 
-            "Can't yet handle multipart" 
-            (headerFieldsAt: 'Content-Type') first y = 'application/x-www-form-urlencoded'
-               ifFalse: [^ blk value: 'Wrong content type'].
-            pairs: rawBody asTokensSeparatedByCharactersIn: '&'.
-            pairs do: [|:p. splitPair |
+            ifGET: [u: queryString. u = '' ifTrue: [^ blk value: 'No Variables Found']]
+            IfPOST: ["Can't yet handle multipart" 
+              ((headerFieldsAt: 'Content-Type') size > 0) && [
+               (headerFieldsAt: 'Content-Type') first y = 'application/x-www-form-urlencoded']
+               ifFalse: [^ blk value: 'Wrong content type']
+               u: rawBody]
+            Else: [^ blk value: 'Unknown Request Method'].
+
+              pairs: u asTokensSeparatedByCharactersIn: '&'.
+              pairs do: [|:p. splitPair |
                splitPair: p asTokensSeparatedByCharactersIn: '='.
-               splitPair size = 2 ifFalse: [^ blk value: 'Badly formed key value pair'].
-               splitPair first = x ifTrue: [^ unescape: splitPair at: 1]].
-            blk value: 'Variable not found').
+               splitPair size = 2 ifFalse: [^ blk value: 'Badly formed key value pair']. 
+               (unescape: splitPair first) = x ifTrue: [^ unescape: splitPair at: 1]].
+              blk value: 'Variable not found').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'request' -> () From: ( | {
