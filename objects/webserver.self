@@ -1,7 +1,7 @@
- '0.2.0'
+ '0.3.0'
  '
-Copyright 1992-2014 AUTHORS.
-See the legal/LICENSE file for license information and legal/AUTHORS for authors.
+Copyright 2015-2016 AUTHORS.
+See the LICENSE file for license information and AUTHORS for authors.
 '
 [ 
 modules allCore version >= (modules init moduleVersion copyOn: '30.8.0-prerelease2') 
@@ -14,6 +14,7 @@ modules allCore version >= (modules init moduleVersion copyOn: '30.8.0-prereleas
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          webserver = bootstrap define: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'copyright' From:
              bootstrap remove: 'directory' From:
              bootstrap remove: 'fileInTimeString' From:
              bootstrap remove: 'myComment' From:
@@ -27,10 +28,22 @@ modules allCore version >= (modules init moduleVersion copyOn: '30.8.0-prereleas
 
 CopyDowns:
 globals modules init. copy 
-SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision subpartNames tree.
+SlotsToOmit: copyright directory fileInTimeString myComment postFileIn preFileIn revision subpartNames tree.
 
 \x7fIsComplete: '.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
+         'Category: state\x7fModuleInfo: Module: webserver InitialContents: InitializeToExpression: (\'
+Copyright 2015-2016 AUTHORS.
+See the LICENSE file for license information and AUTHORS for authors.
+\')\x7fVisibility: public'
+        
+         copyright <- '
+Copyright 2015-2016 AUTHORS.
+See the LICENSE file for license information and AUTHORS for authors.
+'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
@@ -55,7 +68,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
          'ModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          postFileIn = ( |
-            | resend.postFileIn).
+            | 
+            resend.postFileIn.
+            webserver server registerForAutomaticStartup).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
@@ -68,9 +83,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+         'ModuleInfo: Module: webserver InitialContents: InitializeToExpression: (\'0.3.0\')\x7fVisibility: public'
         
-         revision <- '0.2.0'.
+         revision <- '0.3.0'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
@@ -255,7 +270,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         
          handle: con = ( |
             | 
-            con res contents: 'Not configures, using default Servlet.'.
+            con res contents: 'Not configured, using default Servlet.'.
             con).
         } | ) 
 
@@ -1006,23 +1021,46 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
-         'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: automatic startup\x7fComment: Called when module loaded\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
          registerForAutomaticStartup = ( |
              m.
+            | 
+            m: (message copy receiver: webserver server Selector: 'startFromScheduler').
+            (snapshotAction schedulerInitialMessages anySatisfy: [|:e| m = e ])
+              ifFalse: [snapshotAction addSchedulerInitialMessage: m].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         registerForCommandLinePortSelection = ( |
             | 
             snapshotAction
               forCommandLineArg: '-http-port'
                        DoAction: (| parent* = lobby.
                                     value: i With: arg = (
-                                     webserver server startWebserverAutomatically: true.
                                      webserver server port: 
                                         (snapshotAction commandLine at: i succ) asInteger. 
                                      i +2).
                                  |).
-            m: (message copy receiver: webserver server Selector: 'startFromScheduler').
-            (snapshotAction schedulerInitialMessages anySatisfy: [|:e| m = e ])
-              ifFalse: [snapshotAction addSchedulerInitialMessage: m].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'server' -> () From: ( | {
+         'Category: automatic startup\x7fModuleInfo: Module: webserver InitialContents: FollowSlot\x7fVisibility: public'
+        
+         registerForCommandLineStartupSelection = ( |
+            | 
+            snapshotAction
+              forCommandLineArg: '-http-start'
+                       DoAction: (| parent* = lobby.
+                                    value: i With: arg = (
+                                     'true' = (snapshotAction commandLine at: i succ)
+                                          ifTrue: [ webserver server startAutomatically: true].
+                                      i +2).
+                                 |).
             self).
         } | ) 
 
