@@ -146,7 +146,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             m creatorPathIfPresent: [|:p. i <- 0. t. s <- '<a href="/">lobby</a> ' |
                 [i < p size] whileTrue: [
                   t: p clone contents: p contents slice: 0 @ i.
-                  s: s, '<a href="/', (transform: t fullName), '/">', t shortName, '</a> &rarr; '.
+                  s: s, '<a href="/', (transform: t fullName), '/">', (t shortName splitOn: ' ') last, '</a> &rarr; '.
                   i: i + 1
                 ].
                 s]
@@ -158,16 +158,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         
          buildHtmlForSlotsIn: categories StartingWith: prefix = ( |
             | 
-            '<div class="row">
-              <div class="col-md-12">
-                <h3>
-                  <small>
-                    <span class="glyphicon glyphicon-chevron-down"></span>
-                  </small>', 
-                  (prefix size > 0 ifTrue: [prefix last] False: ''), 
-            '   </h3>
-              </div>
-              <div class="col-md-12">
+            '<div class="row">',
+            (renderPrefix: prefix),
+            '  <div class="col-md-12">
                 <p>
                   <table class="table table-condensed table-hover">',
                   [| slots. html <- '' |
@@ -184,7 +177,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
                     cat: (categories keys copy
                        filterBy: [|:e| (e size = (prefix size + 1)) && [prefix = (e slice: 0 @ prefix size)]]).
                     cat copySort do: [|:n| 
-                       html: html, '<div class="col-md-12">', 
+                     html: html, '<div class="col-md-12">', 
                               (buildHtmlForSlotsIn: categories StartingWith: n), 
                                '</div>'].
                     html
@@ -201,7 +194,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
             | 
             categories: dictionary copyRemoveAll.
             o do: [|:s. c| 
-               c: ('\x7f' split: s categoryIfFail: '') asSequence.
+               c: ((s categoryIfFail: '') asVector splitOn: '\x7f') asSequence.
                (c lastIfAbsent: '') = '\x7f' ifTrue: [c: c copyWithoutLast].
                add: s ToCategory: c In: categories].
             buildHtmlForSlotsIn: categories StartingWith: sequence copy).
@@ -220,7 +213,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         
          contentsForObject: o = ( |
             | 
-            o isReflecteeMethod ifTrue: [contentsForMethod: o] False: [escape: o safeName]).
+            o isReflecteeMethod ifTrue: [contentsForMethod: o] False: [linkForObject: o]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
@@ -292,7 +285,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
 <html lang=\"en\">
 <head>
 <meta charset=\"utf-8\">
-<title>Self WWW Browser</title>
+<title>Self Online | {{{title}}}</title>
 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
 <!-- Bootstrap styles -->
 <link rel=\"stylesheet\" href=\"//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css\">
@@ -312,16 +305,16 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
              r.
             | 
 
-            r: header.
+            r: header copy replace: '{{{title}}}' With: o evalName.
             r: r, banner.
             r: r, '<h1><small>'.
             r: r, breadcrumbsFor: o.
-            r: r, '</small>', (o evalName), '</h1>'.
+            r: r, '</small>', (o evalName splitOn: ' ') last, '</h1>'.
             r: r, '<div class="row"><div class="col-md-12">'.
             o comment != '' ifTrue: [
              r: r, '<p><pre>', (o comment), '</pre></p>'].
             r: r, '<p>CopyDowns: ', (o copyDowns printString), '</p>'.
-            r: r, '<p>CreatorPath: ', (' ' join: o creatorPath), '</p>'.
+            r: r, '<p>CreatorPath: ', (o creatorPath asVector joinUsing: ' '), '</p>'.
             r: r, '<p>', (o moduleSummaryStringForSlotsFilteredBy: true), '</p>'.
             r: r, '</div></div>'.
             r: r, buildSlots: o.
@@ -335,7 +328,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
          htmlForSlot: s = ( |
             | 
             '<tr><td width=60%>',
-            (linkForObject: s),
+            s key, (s isParent ifTrue: ['*'] False: ''),
             (appropriateSigilFor: s),
             (contentsForObject: s value),
             '</td><td width=40%>',
@@ -348,9 +341,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         
          linkForObject: s = ( |
             | 
-            s value creatorPathIfPresent: [|:p|
-              '<a href="/', (transform: p fullName), '/">', s fullName, '</a>']
-            IfAbsent: [s fullName]).
+            s creatorPathIfPresent: [|:p|
+              '<a href="/', (transform: p fullName), '/">', s safeName, '</a>']
+            IfAbsent: [s safeName]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
@@ -367,6 +360,23 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: lobbyBrowserServlet InitialContents: FollowSlot'
+        
+         renderPrefix: p = ( |
+            | 
+            p size = 0 ifTrue: [^ ''].
+            p last size = 0 ifTrue: [^ ''].
+            '  <div class="col-md-12">
+                <h3>
+                  <small>
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                  </small>', 
+                  p last, 
+            '   </h3>
+              </div>').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> 'lobbyBrowserServlet' -> 'parent' -> () From: ( | {
          'Category: link for object\x7fModuleInfo: Module: lobbyBrowserServlet InitialContents: FollowSlot'
         
          transform: s = ( |
@@ -378,7 +388,8 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
          'Category: contents for object\x7fModuleInfo: Module: lobbyBrowserServlet InitialContents: FollowSlot'
         
          wrapCode: c = ( |
-            | [|:t | '<', t, '>', c, '</', t, '>'] value: ((c includes: '\n') ifTrue: 'pre' False: 'code')).
+            | 
+            [|:t | '<', t, '>', c, '</', t, '>'] value: ((c includes: '\n') ifTrue: 'pre' False: 'code')).
         } | ) 
 
 
