@@ -755,13 +755,13 @@ See the LICENSE file for license information and AUTHORS for authors.
             IfPOST: ["Can't yet handle multipart" 
               ((headerFieldsAt: 'Content-Type') size > 0) && [
                (headerFieldsAt: 'Content-Type') first y = 'application/x-www-form-urlencoded']
-               ifFalse: [^ blk value: 'Wrong content type']
+               ifFalse: [^ blk value: 'Wrong content type'].
                u: rawBody]
             Else: [^ blk value: 'Unknown Request Method'].
 
-              pairs: u asTokensSeparatedByCharactersIn: '&'.
+              pairs: u splitOn: '&'.
               pairs do: [|:p. splitPair |
-               splitPair: p asTokensSeparatedByCharactersIn: '='.
+               splitPair: p splitOn: '='.
                splitPair size = 2 ifFalse: [^ blk value: 'Badly formed key value pair']. 
                (unescape: splitPair first) = x ifTrue: [^ unescape: splitPair at: 1]].
               blk value: 'Variable not found').
@@ -969,11 +969,11 @@ See the LICENSE file for license information and AUTHORS for authors.
             conn: webserver httpconnection copy.
             conn req: req.
             conn res: webserver response copy.
-            r: safeHandle: conn              IfFail: broken.
-            r res writeHeaderOn: io          IfFail: broken.
+            safeHandle: conn              IfFail: broken.
+            conn res writeHeaderOn: io    IfFail: broken.
             "Ignore body if only want head"
             req method != 'HEAD' ifTrue: [
-                 r res writeBodyOn: io IfFail: broken].
+                 conn res writeBodyOn: io IfFail: broken].
             io closeIfFail: false.
             self).
         } | ) 
@@ -1100,6 +1100,10 @@ See the LICENSE file for license information and AUTHORS for authors.
                  ps abortIfLive.
                  self )
                |).
+            [ " For finding message"
+            nil handle: nil.
+            nil kill: nil After: nil.
+            ].
             p: (message copy receiver: servlet 
                              Selector: 'handle:' 
                                  With: con) fork resume.
