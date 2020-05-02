@@ -95,12 +95,6 @@ See the LICENSE file for license information and AUTHORS for authors.
 '.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'webserver' -> () From: ( | {
-         'ModuleInfo: Module: webserver InitialContents: InitializeToExpression: (\'org_selflanguage_webserver\')'
-        
-         tree <- 'org_selflanguage_webserver'.
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> () From: ( | {
          'Category: applications\x7fModuleInfo: Module: webserver InitialContents: FollowSlot'
         
