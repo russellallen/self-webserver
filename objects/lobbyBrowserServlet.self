@@ -79,11 +79,6 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
          subpartNames <- ''.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'lobbyBrowserServlet' -> () From: ( | {
-         'ModuleInfo: Module: lobbyBrowserServlet InitialContents: InitializeToExpression: (\'org_selflanguage_webserver\')'
-        
-         tree <- 'org_selflanguage_webserver'.
-        } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'webserver' -> 'exampleServlets' -> () From: ( | {
          'ModuleInfo: Module: lobbyBrowserServlet InitialContents: FollowSlot'
