@@ -1,6 +1,6 @@
  '0.1.0'
  '
-Copyright 1992-2014 AUTHORS.
+Copyright 1992-2016 AUTHORS.
 See the legal/LICENSE file for license information and legal/AUTHORS for authors.
 '
 [ 
@@ -328,7 +328,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn preFileIn revision 
          htmlForSlot: s = ( |
             | 
             '<tr><td width=60%>',
-            s key, (s isParent ifTrue: ['*'] False: ''),
+            s longKey,
             (appropriateSigilFor: s),
             (contentsForObject: s value),
             '</td><td width=40%>',
